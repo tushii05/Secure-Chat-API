@@ -18,7 +18,6 @@ import msgRoutes from './modules/messages/messages.routes';
 
 const app = express();
 
-// Core Middlewares
 app.use(helmet());
 app.use(cors({ origin: true, credentials: true }));
 app.use(compression());
@@ -27,13 +26,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('combined'));
 app.use('/uploads', express.static('uploads'));
 
-// Rate Limit
 app.use(rateLimit({
   windowMs: config.rateLimit.windowMs,
   max: config.rateLimit.max
 }));
 
-// Routes
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/conversations', convRoutes);
@@ -46,7 +43,6 @@ const swaggerDocument = YAML.load(
 
 app.use('/api-docs', swaggerUi.serve);
 app.get('/api-docs', swaggerUi.setup(swaggerDocument));
-// Error Handler
 app.use(errorHandler);
 
 export default app;

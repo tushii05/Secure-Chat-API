@@ -1,7 +1,5 @@
 "use strict";
-// import jwt from 'jsonwebtoken';
-// import { randomBytes } from 'crypto';
-// import config from '../config';
+
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -42,26 +40,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.signAccess = signAccess;
 exports.verifyAccess = verifyAccess;
 exports.makeRefresh = makeRefresh;
-// export function signAccess(payload: object) {
-//   return jwt.sign(payload, config.jwt.accessSecret, { expiresIn: config.jwt.accessExpiresIn });
-// }
-// export function verifyAccess(token: string) {
-//   return jwt.verify(token, config.jwt.accessSecret);
-// }
-// export function makeRefresh() {
-//   return randomBytes(64).toString('hex');
-// }
+
 const jwt = __importStar(require("jsonwebtoken"));
 const crypto_1 = require("crypto");
 const config_1 = __importDefault(require("../config"));
-// Sign an access token
 function signAccess(payload) {
     return jwt.sign(payload, config_1.default.jwt.accessSecret, {
-        // explicitly mark options as SignOptions
         expiresIn: config_1.default.jwt.accessExpiresIn,
     });
 }
-// Verify an access token
 function verifyAccess(token) {
     const decoded = jwt.verify(token, config_1.default.jwt.accessSecret);
     if (typeof decoded === 'string') {
@@ -72,11 +59,10 @@ function verifyAccess(token) {
         throw new Error('Invalid token payload structure');
     }
     return {
-        sub: Number(payload.sub), // FIX — Cast safely
+        sub: Number(payload.sub), 
         role: payload.role,
     };
 }
-// Generate a random refresh token
 function makeRefresh() {
     return (0, crypto_1.randomBytes)(64).toString('hex');
 }

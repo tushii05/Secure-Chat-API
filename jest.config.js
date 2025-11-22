@@ -3,7 +3,6 @@ module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
 
-  // Required for TypeScript files
   transform: {
     "^.+\\.ts$": [
       "ts-jest",

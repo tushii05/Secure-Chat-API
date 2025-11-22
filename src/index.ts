@@ -1,17 +1,3 @@
-// import http from 'http';
-// import app from './app';
-// import attachSockets from './sockets';
-// import config from './config';
-
-// const server = http.createServer(app);
-
-// attachSockets(server);
-
-// server.listen(config.port, () => {
-//   console.log(`Server listening on ${config.port}`);
-// });
-
-
 import http from 'http';
 import app from './app';
 import attachSockets from './sockets';

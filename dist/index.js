@@ -1,17 +1,10 @@
 "use strict";
-// import http from 'http';
-// import app from './app';
-// import attachSockets from './sockets';
-// import config from './config';
+
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// const server = http.createServer(app);
-// attachSockets(server);
-// server.listen(config.port, () => {
-//   console.log(`Server listening on ${config.port}`);
-// });
+
 const http_1 = __importDefault(require("http"));
 const app_1 = __importDefault(require("./app"));
 const sockets_1 = __importDefault(require("./sockets"));
