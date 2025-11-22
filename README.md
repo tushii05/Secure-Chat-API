@@ -33,7 +33,7 @@ This is a **Secure Chat API** built with Node.js, Express, and TypeScript. It pr
 1. **Clone the repo**
 
 ```bash
-git clone https://github.com/yourusername/secure-chat-api.git
+git clone https://github.com/tushii05/Secure-Chat-API
 cd secure-chat-api
 ```
 
