@@ -1,0 +1,435 @@
+openapi: 3.0.1
+info:
+  title: Secure Chat API
+  version: 1.0.0
+servers:
+  - url: http://localhost:4000
+paths:
+
+  # AUTH
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Logged in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access:
+                    type: string
+                  refresh:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      name:
+                        type: string
+
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                name:
+                  type: string
+              required:
+                - email
+                - password
+                - name
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  email:
+                    type: string
+                  name:
+                    type: string
+
+  /auth/refresh:
+    post:
+      tags:
+        - Auth
+      summary: Refresh access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refresh:
+                  type: string
+              required:
+                - refresh
+      responses:
+        '200':
+          description: Token refreshed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access:
+                    type: string
+                  refresh:
+                    type: string
+
+  /auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: Logout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refresh:
+                  type: string
+              required:
+                - refresh
+      responses:
+        '200':
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  # CONVERSATIONS
+  /conversations:
+    post:
+      tags:
+        - Conversations
+      summary: Create Conversation
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                participantId:
+                  type: integer
+              required:
+                - participantId
+      responses:
+        '201':
+          description: Conversation created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  userAId:
+                    type: integer
+                  userBId:
+                    type: integer
+                  createdAt:
+                    type: string
+                  updatedAt:
+                    type: string
+
+    get:
+      tags:
+        - Conversations
+      summary: List Conversations
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of conversations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    userAId:
+                      type: integer
+                    userBId:
+                      type: integer
+                    createdAt:
+                      type: string
+                    updatedAt:
+                      type: string
+                    messages:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          conversationId:
+                            type: integer
+                          senderId:
+                            type: integer
+                          content:
+                            type: string
+                          metadata:
+                            type: object
+                          createdAt:
+                            type: string
+
+  # MESSAGES
+  /messages:
+    post:
+      tags:
+        - Messages
+      summary: Send Message
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                conversationId:
+                  type: integer
+                content:
+                  type: string
+                metadata:
+                  type: object
+              required:
+                - conversationId
+                - content
+      responses:
+        '201':
+          description: Message sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  conversationId:
+                    type: integer
+                  senderId:
+                    type: integer
+                  content:
+                    type: string
+                  metadata:
+                    type: object
+                  createdAt:
+                    type: string
+
+  /messages/conversations/{conversationId}/messages:
+    get:
+      tags:
+        - Messages
+      summary: List Messages in a Conversation
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: conversationId
+          schema:
+            type: integer
+          required: true
+        - in: query
+          name: limit
+          schema:
+            type: integer
+        - in: query
+          name: cursor
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Messages list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    conversationId:
+                      type: integer
+                    senderId:
+                      type: integer
+                    content:
+                      type: string
+                    metadata:
+                      type: object
+                    createdAt:
+                      type: string
+
+  # USERS
+  /users:
+    get:
+      tags:
+        - Users
+      summary: List Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: perPage
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Users list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        email:
+                          type: string
+                        name:
+                          type: string
+                  page:
+                    type: integer
+                  perPage:
+                    type: integer
+                  total:
+                    type: integer
+
+  # PROFILE PICTURE MANAGEMENT
+  /users/{userId}/profile-pictures:
+    post:
+      tags:
+        - Profile Pictures
+      summary: Upload profile pictures
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                images:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Uploaded successfully
+
+  /users/{userId}/profile-pictures/{pictureId}/default:
+    patch:
+      tags:
+        - Profile Pictures
+      summary: Set default profile picture
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: pictureId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Default set
+
+  /users/{userId}/profile-pictures/{pictureId}:
+    delete:
+      tags:
+        - Profile Pictures
+      summary: Delete profile picture
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: pictureId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Deleted successfully
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
